@@ -208,4 +208,6 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
         });
         itemsContainA.subscribe(s -> System.out.println("Tag Predicate " + s));
     }
+
+
 }
