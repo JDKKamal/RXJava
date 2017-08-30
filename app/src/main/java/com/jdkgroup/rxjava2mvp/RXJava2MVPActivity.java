@@ -2,6 +2,8 @@ package com.jdkgroup.rxjava2mvp;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.view.View;
 
 import com.jdkgroup.baseclasses.SimpleMVPActivity;
 import com.jdkgroup.model.User;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -79,8 +82,8 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
         doDistinct();
         getJustList();
         getFlapMap();
-
-
+        getFlatMapFilter();
+        getTake();
     }
 
     @Override
@@ -241,4 +244,92 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
 
         observable.subscribe(observer);
     }
+
+    public void getFlatMapFilter() {
+
+        List<String> alObserver = new ArrayList<>();
+        alObserver.add("Cricket");
+        alObserver.add("Football");
+        alObserver.add("Basketball");
+
+        final Observable<List<String>> aObservable = Observable.just(alObserver);
+
+        aObservable.flatMap(new Function<List<String>, ObservableSource<String>>() {
+            @Override
+            public ObservableSource<String> apply(List<String> usersList) throws Exception {
+                return Observable.fromIterable(usersList); // returning user one by one from usersList.
+            }
+        })
+                .filter(new Predicate<String>() {
+                    @Override
+                    public boolean test(String user) throws Exception {
+                        // filtering user who follows me.
+                        return user.equalsIgnoreCase("Basketball");
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String str) {
+                        System.out.println("Tag Filter " + str);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+
+    public void getTake() {
+        List<String> alObserver = new ArrayList<>();
+        alObserver.add("Cricket");
+        alObserver.add("Football");
+        alObserver.add("Basketball");
+
+        final Observable<List<String>> aObservable = Observable.just(alObserver);
+        aObservable
+                .flatMap(new Function<List<String>, ObservableSource<String>>() { // flatMap - to return users one by one
+                    @Override
+                    public ObservableSource<String> apply(List<String> usersList) throws Exception {
+                        return Observable.fromIterable(usersList); // returning user one by one from usersList.
+                    }
+                })
+                .take(2) // it will only emit first 4 users out of all
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(String str) {
+                        System.out.println("Tag Take " + str);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+    }
+
 }
