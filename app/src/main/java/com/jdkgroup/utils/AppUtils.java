@@ -62,13 +62,17 @@ import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 public class AppUtils {
@@ -626,10 +630,20 @@ public class AppUtils {
         }
     }
 
-    public static <T> List<T> getToList(String json, Class<T> typeClass)
-    {
+    public static <T> List<T> getToList(String json, Class<T> typeClass) {
         gson = gsonBuilder.create();
         return gson.fromJson(json, new ListOfJson<T>(typeClass));
+    }
+
+    //TODO DUPLICATE REMOVE ITEMS
+    public static <E> List<E> ListRemoveDuplicates(List<E> list) {
+        Set<E> uniques = new HashSet<E>();
+        uniques.addAll(list);
+        return new ArrayList<E>(uniques);
+    }
+
+    public static <E> List<E> linkedHashSetRemoveDuplicates(List<E> list) {
+        return  new ArrayList<E>(new LinkedHashSet<>(list));
     }
 
     public static void appExist(final Activity activity) {

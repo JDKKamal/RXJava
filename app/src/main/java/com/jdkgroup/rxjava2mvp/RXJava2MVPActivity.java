@@ -25,6 +25,7 @@ import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -84,6 +85,7 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
         getFlapMap();
         getFlatMapFilter();
         getTake();
+        getConsumer();
     }
 
     @Override
@@ -209,7 +211,7 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
                 return t.contains("a") ? true : false;
             }
         });
-        itemsContainA.subscribe(s -> System.out.println("Tag Predicate " + s));
+        itemsContainA.subscribe(s -> System.out.println("Tag GenericPredicate " + s));
     }
 
     public void getObserver() {
@@ -331,5 +333,15 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
                     }
                 });
     }
+
+    public void getConsumer()
+    {
+        Observable<String> observable = Observable.just("how", "to", "do", "in", "java");
+        //consumer
+        Consumer<? super String> consumer = System.out::println;
+        //Attaching producer to consumer
+        observable.subscribe(consumer);
+    }
+
 
 }
