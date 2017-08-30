@@ -2,7 +2,6 @@ package com.jdkgroup.rxjava2mvp;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.jdkgroup.baseclasses.SimpleMVPActivity;
 import com.jdkgroup.model.User;
@@ -73,6 +72,7 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
         paramMap.put("limit", "3");
         getPresenter().callRXJavListDetailApi(paramMap);
 
+        getObserver();
         getFromIterable();
         getPredicate();
         doMerge();
@@ -209,5 +209,36 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
         itemsContainA.subscribe(s -> System.out.println("Tag Predicate " + s));
     }
 
+    public void getObserver() {
+        List<String> alObserver = new ArrayList<>();
+        alObserver.add("Cricket");
+        alObserver.add("Football");
 
+        Observable<List<String>> observable = Observable.just(alObserver);
+        Observer<List<String>> observer = new Observer<List<String>>() {
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(List<String> response) {
+                for (String str : response) {
+                    System.out.println("Tag Observer " + str);
+                }
+            }
+        };
+
+        observable.subscribe(observer);
+    }
 }
