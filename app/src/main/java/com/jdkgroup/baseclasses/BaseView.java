@@ -3,6 +3,7 @@ package com.jdkgroup.baseclasses;
 import android.app.Activity;
 import android.view.View;
 
+import java.util.List;
 import java.util.Map;
 
 public interface BaseView<T> {
@@ -11,6 +12,7 @@ public interface BaseView<T> {
     void showProgressDialog(boolean show);
     void showProgressToolBar(boolean show, View view);
     void onSuccess(T response);
+    //void onSuccess(List<T> response);
     void onFailure(String message);
     void onAuthenticationFailure(String message);
     Map<String, String> getDefaultParameter();

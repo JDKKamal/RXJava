@@ -7,6 +7,7 @@ public class RestConstant {
 
     /*Api name Constant*/
     public static final String API_GETANUSER = BASE_URL + "getAnUser/{userId}";
+    public static final String API_GETALLUSER = BASE_URL + "getAllUsers/{pageNumber}";
 
     /* TODO URL */
     public static final String WHETHER_IMAGE = "http://openweathermap.org/img/w/";

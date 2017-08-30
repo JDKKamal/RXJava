@@ -10,9 +10,15 @@ import com.jdkgroup.rxjava.R;
 import com.jdkgroup.utils.AppUtils;
 import com.jdkgroup.view.RXJavaView;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import butterknife.ButterKnife;
 
 public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJavaView> implements RXJavaView {
+
+    Map paramMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +54,20 @@ public class RXJava2MVPActivity extends SimpleMVPActivity<RXJava2Presenter, RXJa
     }
 
     private void APICall() {
-        getPresenter().callRXJavSingleDetailApi(this);
+        paramMap = new HashMap();
+        paramMap.put("userId", "1");
+        getPresenter().callRXJavSingleDetailApi(paramMap);
+
+        getPresenter().callRXJavListDetailApi();
     }
 
     @Override
     public void onFailure(String message) {
         System.out.println("Tag" + message);
+    }
+
+    @Override
+    public void responseListUser(List<User> response) {
+        System.out.println("Tag List Users " + response.size());
     }
 }
