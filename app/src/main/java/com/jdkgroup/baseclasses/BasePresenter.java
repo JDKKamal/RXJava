@@ -19,6 +19,7 @@ public abstract class BasePresenter<V extends BaseView> {
     public boolean hasInternetWithoutMessage(){
         return view.hasInternetWithoutMessage();
     }
+
     public boolean isViewAttached() {
         return view != null;
     }

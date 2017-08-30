@@ -1,5 +1,7 @@
 package com.jdkgroup.presenter;
 
+import android.util.Log;
+
 import com.jdkgroup.baseclasses.BasePresenter;
 import com.jdkgroup.connection.RestConstant;
 import com.jdkgroup.model.User;
@@ -7,8 +9,8 @@ import com.jdkgroup.rxjava.R;
 import com.jdkgroup.view.RXJavaView;
 import com.rx2androidnetworking.Rx2AndroidNetworking;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -17,8 +19,8 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RXJava2Presenter extends BasePresenter<RXJavaView> {
 
-    public void callRXJavSingleDetailApi(Map paramMap) {
-        if (hasInternet()) { //CHECK THE INTERNET CONNECTION
+    public void callRXJavSingleDetailApi(HashMap<String, String>  paramMap) {
+        if (hasInternet()) {
             getView().showProgressDialog(true);
             Rx2AndroidNetworking.get(RestConstant.API_GETANUSER)
                     .addPathParameter(paramMap)
@@ -54,12 +56,12 @@ public class RXJava2Presenter extends BasePresenter<RXJavaView> {
         }
     }
 
-    public void callRXJavListDetailApi() {
-        if (hasInternet()) { //CHECK THE INTERNET CONNECTION
+    public void callRXJavListDetailApi(HashMap<String, String> paramMap) {
+        if (hasInternet()) {
             getView().showProgressDialog(true);
             Rx2AndroidNetworking.get(RestConstant.API_GETALLUSER)
                     .addPathParameter("pageNumber", "0")
-                    .addQueryParameter("limit", "3")
+                    .addQueryParameter(paramMap)
                     .build()
                     .getObjectListObservable(User.class)
                     .subscribeOn(Schedulers.io())
@@ -91,5 +93,54 @@ public class RXJava2Presenter extends BasePresenter<RXJavaView> {
             getView().showProgressDialog(false);
             getView().onFailure(getView().getActivity().getString(R.string.no_internet_message));
         }
+    }
+
+    public Observer<String> getObserverMerge() {
+        return new Observer<String>() {
+
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(String value) {
+                getView().doMerge(value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+    }
+
+    public Observer<Integer> getObserverDistinct() {
+        return new Observer<Integer>() {
+
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Integer value) {
+                getView().doDistinct(value);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
     }
 }
