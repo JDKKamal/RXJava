@@ -21,12 +21,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
+import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
@@ -45,8 +47,12 @@ import android.widget.Toast;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jdkgroup.connection.RestConstant;
 import com.jdkgroup.customviews.gson.ListOfJson;
+import com.jdkgroup.model.OSInfo;
 import com.jdkgroup.rxjava.R;
 
 import org.json.JSONObject;
@@ -76,7 +82,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 public class AppUtils {
-    private static String TAG = "data";
+    private static String TAG = "Tag";
     private static int screenWidth = 0;
 
     private static CharSequence charsequence;
@@ -636,14 +642,41 @@ public class AppUtils {
     }
 
     //TODO DUPLICATE REMOVE ITEMS
-    public static <E> List<E> ListRemoveDuplicates(List<E> list) {
+    public static <E> List<E> listRemoveDuplicates(List<E> list) {
         Set<E> uniques = new HashSet<E>();
         uniques.addAll(list);
         return new ArrayList<E>(uniques);
     }
 
     public static <E> List<E> linkedHashSetRemoveDuplicates(List<E> list) {
-        return  new ArrayList<E>(new LinkedHashSet<>(list));
+        return new ArrayList<E>(new LinkedHashSet<>(list));
+    }
+
+    public static void getDeviceInfo(Activity activity) {
+        PackageInfo packageInfo;
+        String deviceUniqueId, deviceType, deviceName, osVersion, appVersion = "", countryIso, networkOperatorName;
+
+        deviceUniqueId = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+        deviceType = "Android";
+        deviceName = Build.BRAND + Build.MODEL;
+        osVersion = Build.VERSION.RELEASE;
+
+        try {
+            packageInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+            appVersion = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        TelephonyManager tm = (TelephonyManager) activity.getSystemService(activity.TELEPHONY_SERVICE);
+        countryIso = tm.getNetworkCountryIso();
+        networkOperatorName = tm.getNetworkOperatorName();
+
+        List<OSInfo> alOSInfo = new ArrayList<>();
+        alOSInfo.add(new OSInfo(deviceUniqueId, deviceType, deviceName, osVersion, appVersion, countryIso, networkOperatorName));
+
+        logD("OS Information " + getToJsonClass(alOSInfo));
     }
 
     public static void appExist(final Activity activity) {

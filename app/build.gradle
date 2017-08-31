@@ -41,4 +41,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'uk.co.chrisjenx:calligraphy:2.3.0'
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.google.guava:guava:23.0-android'
 }
